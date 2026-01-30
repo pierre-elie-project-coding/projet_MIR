@@ -39,4 +39,38 @@ def plot_one_data(df:pd.DataFrame,element:str):
     plt.plot(abs,value,label=element)
     plt.legend()
     plt.show()
+
+import matplotlib.pyplot as plt
+import os
+
+def compare_data(id):
+    base_path = "data"
+    path_data = os.path.join(base_path, "learning_test.fa")
+    path_par = os.path.join(base_path, "learning_test_parameters.txt")
+    path_states = os.path.join(base_path, "learning_test_states.fa")
+
+    data = read_data_from_text(path_read_data=path_data, path_read_par=path_par, stop=16)
+    row = data.loc[id]
+    read_data_array = row['read_data']
+    read_par = row['read_par']
+
+    values_par = []
+
+    with open(path_states) as f:
+        lines_par = f.readlines()
+
+    for i in range(0, len(lines_par), 2):
+        read_id_line = lines_par[i].strip().replace('>', '')
+        if str(read_id_line) == str(id):
+            values_par = list(map(float, lines_par[i+1].split()))
+            break
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(read_data_array, label='Read Data')
+    plt.plot(values_par, linestyle='--', color='red', label='States')
+    plt.title(f"ID: {id}")
+    print(f"Paramètres: {read_par}") 
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
     
