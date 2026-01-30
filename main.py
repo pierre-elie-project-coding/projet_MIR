@@ -47,7 +47,7 @@ def main():
     e1 = "c82b24c4-a3a7-4000-b2a6-95bd3815d150"
     e2 = "0659dd4c-cf20-4afd-8674-eb9e6769909d"
     plot_one_data(df=data,element=e2)
-    
+    breakpoint()
 
 if __name__ == "__main__":
     main()
