@@ -42,7 +42,7 @@ def plot_one_data(df:pd.DataFrame,element:str):
     
 
 def main():
-    data =read_data_from_text(path_read_data="data/learning_test.fa",path_read_par="data/learning_test_parameters.txt",stop=16)
+    data = read_data_from_text(path_read_data="data/learning_test.fa",path_read_par="data/learning_test_parameters.txt",stop=16)
     print(f"See DF : \n {data.head()}")
     e1 = "c82b24c4-a3a7-4000-b2a6-95bd3815d150"
     e2 = "0659dd4c-cf20-4afd-8674-eb9e6769909d"
