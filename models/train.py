@@ -1,25 +1,30 @@
 import torch
 
-def train(dataloader,model,loss_fn,optimizer):
+
+def train(dataloader, model, loss_fn, optimizer):
     """
     Train a model on a dataset
 
     Parameters
     ----------
-    dataloader : 
+    dataloader :
         dataloader of the data
-    model : 
+    model :
         model to train, assuming it is defined on the same device as the train fn
-    loss_fn : 
+    loss_fn :
         loss function to use
-    optimizer : 
+    optimizer :
         optimizer for backprop to use
     """
 
     # Selecting the device
-    device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu" # type: ignore
-    print(f"Using {device} device")    
-    
+    device = (
+        torch.accelerator.current_accelerator().type #type: ignore
+        if torch.accelerator.is_available()
+        else "cpu"
+    ) 
+    print(f"Using {device} device")
+
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
