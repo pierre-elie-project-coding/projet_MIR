@@ -1,0 +1,16 @@
+name = "ProjetMIR"
+seed = 42
+
+[data]
+path = "./data/"
+
+[model]
+sliding_window = 51
+
+[training]
+batch_size = 32
+epoch = 5
+
+[optimizer]
+weight_decay = 0.01
+optimizer = "SGD"

@@ -2,18 +2,20 @@ import torch
 import torch.nn as nn
 from models.mlp import MlpSlidingWindow
 from data_process.mlp_preprocess_data import preprocess_data_for_mlp
-from data_process.process_data import fetch_data_for_training, tensor_to_dataloader
+# from data_process.process_data import fetch_data_for_training, tensor_to_dataloader
+from data_process.process_data import fetch_data_for_training
 from models.train import train
 from models.test import test
+import os
 
-def train_mlp():
+def train_mlp(batch_size:int=32,stop:int|None=None,precision:str="full"):
 
     # Fetching data
-    batch_size = 64
-    inputs,labels = fetch_data_for_training()
-    input_tensor,label_tensor = preprocess_data_for_mlp(input_tensor=inputs,labels=labels,sliding_window_size=101)
-    train_dataloader,test_dataloader = tensor_to_dataloader(input_tensor=input_tensor,labels=label_tensor,batch_size=batch_size,with_split=0.8)
-
+    inputs,labels = fetch_data_for_training(stop=stop)
+    train_dataloader,test_dataloader = preprocess_data_for_mlp(input_tensor=inputs,labels=labels,batch_size=32,with_split=0.8,sliding_window_size=51)
+    
+    print(f"Train dataloader : {len(train_dataloader)}")
+    print(f"Test dataloader : {len(test_dataloader)}")
     # Device
     device = (
         torch.accelerator.current_accelerator().type # type: ignore
@@ -24,8 +26,10 @@ def train_mlp():
 
     # Instance of the mlp class
     model = MlpSlidingWindow().to(device)
-    print(model)
 
+    if precision=="half":
+        model = model.half()
+        
     # Loss function + optimizer : TODO tune both of them to improve
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
@@ -34,6 +38,10 @@ def train_mlp():
     epochs = 5
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
-        train(train_dataloader, model, loss_fn, optimizer)
-        test(test_dataloader, model, loss_fn)
+        train(train_dataloader, model, loss_fn, optimizer,device=device)
+        test(test_dataloader, model, loss_fn,device=device)
     print("Done!")
+
+    os.makedirs("weights/mlp_sw", exist_ok=True)
+    torch.save(model.state_dict(), "weights/mlp_sw/mlp_sliding_window_model.pth")
+    print("Saved PyTorch Model State to weights/mlp_sw/mlp_sliding_window_model.pth")

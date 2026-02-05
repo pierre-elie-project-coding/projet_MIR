@@ -1,7 +1,7 @@
 import torch
 
 
-def train(dataloader, model, loss_fn, optimizer):
+def train(dataloader, model, loss_fn, optimizer,device:str="cpu"):
     """
     Train a model on a dataset
 
@@ -10,20 +10,14 @@ def train(dataloader, model, loss_fn, optimizer):
     dataloader :
         dataloader of the data
     model :
-        model to train, assuming it is defined on the same device as the train fn
+        model to train
     loss_fn :
         loss function to use
     optimizer :
         optimizer for backprop to use
+    device :
+        device to train the model on
     """
-
-    # Selecting the device
-    device = (
-        torch.accelerator.current_accelerator().type #type: ignore
-        if torch.accelerator.is_available()
-        else "cpu"
-    ) 
-    print(f"Using {device} device")
 
     size = len(dataloader.dataset)
     model.train()
@@ -31,7 +25,11 @@ def train(dataloader, model, loss_fn, optimizer):
         X, y = X.to(device), y.to(device)
 
         # Compute prediction error
+        # print(f"X size : {X.shape}")
         pred = model(X)
+        # print(f" Pred : {pred.shape}")
+        # pred = pred.transpose(1, 2) # Going from (Batch, Sequence_Length, Classes) to (Batch, Classes, Sequence_Length)
+        # print(f"Y {y.shape}")
         loss = loss_fn(pred, y)
 
         # Backpropagation

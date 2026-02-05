@@ -10,7 +10,7 @@ class MlpSlidingWindow(nn.Module):
     def __init__(self) -> None:
         super().__init__()
         self.first_linear_relu_stack = nn.Sequential(
-            nn.Linear(500, 128),
+            nn.Linear(51, 128),
             nn.ReLU(),
             nn.Linear(128, 64),
             nn.ReLU(),
