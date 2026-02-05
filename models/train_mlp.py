@@ -12,7 +12,12 @@ def train_mlp(batch_size:int=32,stop:int|None=None,precision:str="full"):
 
     # Fetching data
     inputs,labels = fetch_data_for_training(stop=stop)
-    train_dataloader,test_dataloader = preprocess_data_for_mlp(input_tensor=inputs,labels=labels,batch_size=32,with_split=0.8,sliding_window_size=51)
+    train_dataloader,test_dataloader = preprocess_data_for_mlp(input_tensor=inputs,
+                                                               labels=labels,
+                                                               batch_size=32,
+                                                               with_split=0.8,
+                                                               sliding_window_size=51,
+                                                               shuffle=True)
     
     print(f"Train dataloader : {len(train_dataloader)}")
     print(f"Test dataloader : {len(test_dataloader)}")
@@ -31,7 +36,8 @@ def train_mlp(batch_size:int=32,stop:int|None=None,precision:str="full"):
         model = model.half()
         
     # Loss function + optimizer : TODO tune both of them to improve
-    loss_fn = nn.CrossEntropyLoss()
+    weight = torch.tensor([6.7,14.5,1.0,14.5,6.4,10.0],dtype=torch.half) # TODO automate the calculation
+    loss_fn = nn.CrossEntropyLoss(weight=weight)
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
     # Training loop : TODO adding batch normalization + tuning epoch number

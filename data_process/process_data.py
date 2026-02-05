@@ -2,6 +2,7 @@ from data_process.read_and_plot import read_data_from_text
 import pandas as pd
 import torch
 import numpy as np
+from collections import Counter
 
 MAPPING_DICT = {
     -2:0,
@@ -16,7 +17,7 @@ def mapping_slope_to_index(seq:list[int]):
     return [MAPPING_DICT[element] for element in seq]
 
 
-def fetch_data_for_training(stop:int|None=None):
+def fetch_data_for_training(stop:int|None=None,see_stats:bool=False):
     """
     _summary_
 
@@ -50,9 +51,16 @@ def fetch_data_for_training(stop:int|None=None):
     df_sol = df["read_sol"].apply(text2float)
     df_sol = df_sol.apply(text2int)
     df_sol = df_sol.apply(mapping_slope_to_index)
+    # To see class repartition
+    if see_stats:
+        stats = {0:0,1:0,2:0,3:0,4:0,5:0}
+        for row in df_sol:
+            stat_row = dict(Counter(row))
+            for key in stats.keys():
+                stats[key]+=stat_row[key] if key in stat_row.keys() else 0 
+        print(f" Stats : {stats}")
     targets_list = df_sol.to_list()
     targets_list = [torch.tensor(target) for target in targets_list]
-
     return inputs_list,targets_list
 
 if __name__ == "__main__":

@@ -13,3 +13,6 @@ wheels/
 
 # Data folder
 data/
+
+# Model's weights
+weights/

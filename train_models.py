@@ -8,7 +8,7 @@ def train_models():
     # Training the naive mlp
     precision = "half"
     print(f"Training Sliding window mlp in {precision} precision\n")
-    train_mlp(batch_size=8,precision=precision,stop=64)
+    train_mlp(batch_size=8,precision=precision)
     print("="*150)
     print("Finished training")
     print("="*150)

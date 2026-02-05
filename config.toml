@@ -6,11 +6,18 @@ path = "./data/"
 
 [model]
 sliding_window = 51
+precision = "half"
 
 [training]
 batch_size = 32
 epoch = 5
+shuffle = true
+stop = "None"
 
 [optimizer]
 weight_decay = 0.01
 optimizer = "SGD"
+
+[loss]
+loss = "CrossEntropyLoss"
+weight = false

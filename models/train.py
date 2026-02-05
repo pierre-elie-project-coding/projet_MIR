@@ -25,11 +25,7 @@ def train(dataloader, model, loss_fn, optimizer,device:str="cpu"):
         X, y = X.to(device), y.to(device)
 
         # Compute prediction error
-        # print(f"X size : {X.shape}")
         pred = model(X)
-        # print(f" Pred : {pred.shape}")
-        # pred = pred.transpose(1, 2) # Going from (Batch, Sequence_Length, Classes) to (Batch, Classes, Sequence_Length)
-        # print(f"Y {y.shape}")
         loss = loss_fn(pred, y)
 
         # Backpropagation

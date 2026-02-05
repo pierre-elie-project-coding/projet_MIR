@@ -10,7 +10,8 @@ def test(dataloader, model, loss_fn, device: str = "cpu"):
         for X, y in dataloader:
             X, y = X.to(device), y.to(device)
             pred = model(X)
-            # pred = pred.transpose(1, 2) # Going from (Batch, Sequence_Length, Classes) to (Batch, Classes, Sequence_Length)
+            # predicted_classes = pred.argmax(1)
+            # print(f"Classes prédites : {torch.unique(predicted_classes, return_counts=True)}")
             test_loss += loss_fn(pred, y).item()
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
             size += y.numel()
