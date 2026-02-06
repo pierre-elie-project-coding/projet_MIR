@@ -34,7 +34,7 @@ def plot_one_data(df:pd.DataFrame,element:str):
     row = df.loc[element]
     abs = np.linspace(start=0,stop=len(row["read_data"]),num=len(row["read_data"]))
     value = list(map(float,row["read_data"]))
-    print(f"READ_PAR : \n {row["read_par"]}")
+    print(f"READ_PAR : \n {row['read_par']}")
     plt.figure()
     plt.plot(abs,value,label=element)
     plt.legend()
