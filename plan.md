@@ -1,6 +1,7 @@
 ## TODO
 - Make a decorator to benchmark the time of different functions : @benchmark_time / so I can improve them later
 - Automate the weight for the classification.
+- normalize the inputs between [-1,1]
 
 ## Models
 
@@ -14,7 +15,7 @@
 For the sliding window we had to put a padding to the edge of each signals. To fix this edge issue, we chose to use a mirror padding to keep the slope the same. If the beginning of the signal is [a, b, c, ...], we add [c, b] before $\rightarrow$ [c, b, a, b, c...].
 Depending on the size of the window it might not be very interesting. It might also break the physic behind the signal, I don't know yet.
 
-**Remarques sur l'entrainement** 
+**Training notes** 
 1) Windows are shuffled for two reasons : 
     - Data independance : The MLP is stateless (memoryless). When the model sees a window he doesn't remember the previous one. He just takes [51] points and has to guess the middle point new value. He doesn't need more information, for him all the needed information is available in the window.
 
@@ -26,6 +27,10 @@ Depending on the size of the window it might not be very interesting. It might a
     ``❯ python -m data_process.process_data
     Stats : {0: 1949897, 1: 873496, 2: 12762188, 3: 878785, 4: 1978839, 5: 1267162}``
     So : ~64% of class 2 and class 1 or class 3 at ~ 4%. The model will always predict class 2, adding weight to each class in the CE loss is mandatory
+3) I normalize the input, because ReLU is made for input that can be negative. 
+
+**Things we need to watch out**
+We should probably normalize the test dataset input with the value parameters on the train dataset, because for the inference the neural network doesn't have access to the mean or variance of the future inputs.
 
 
 ### Unet

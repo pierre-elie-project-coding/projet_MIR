@@ -1,18 +1,18 @@
 from models.train_mlp import train_mlp
+from utils.parse_config import get_config
+
 
 def train_models():
-    print("="*150)
+    print("=" * 150)
     print("Starting training \n")
-    print("="*150)
+    print("=" * 150)
 
     # Training the naive mlp
-    precision = "half"
-    print(f"Training Sliding window mlp in {precision} precision\n")
-    train_mlp(batch_size=8,precision=precision)
-    print("="*150)
+    train_mlp(stop=512)
+    print("=" * 150)
     print("Finished training")
-    print("="*150)
+    print("=" * 150)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     train_models()

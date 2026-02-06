@@ -12,7 +12,8 @@ def read_data_from_text(
     # reading read_id and read_data
     with open(path_read_data, "r", encoding="utf-8") as f:
         file = f.read().split("\n")
-        if file[-1]==['']: file.pop()
+        if file[-1] == [""]:
+            file.pop()
         for i in range(int(len(file) / 2)):
             if stop and (2 * i >= stop):
                 break
@@ -22,7 +23,8 @@ def read_data_from_text(
     # reading read_par
     with open(path_read_par, "r", encoding="utf-8") as f:
         file = f.read().split("\n")
-        if file[-1]==['']: file.pop()
+        if file[-1] == [""]:
+            file.pop()
         for i in range(len(file)):
             if i == stop:
                 break
@@ -35,7 +37,8 @@ def read_data_from_text(
     # reading read_sol
     with open(path_read_sol, "r", encoding="utf-8") as f:
         file = f.read().split("\n")
-        if file[-1]==['']: file.pop()
+        if file[-1] == [""]:
+            file.pop()
         for i in range(int(len(file) / 2)):
             if stop and 2 * i >= stop:
                 break

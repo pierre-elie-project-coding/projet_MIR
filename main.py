@@ -1,5 +1,6 @@
 from data_process.read_and_plot import plot_one_data, read_data_from_text
 
+
 def main():
     data = read_data_from_text(
         path_read_data="learning_test.fa",

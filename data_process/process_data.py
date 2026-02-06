@@ -3,21 +3,19 @@ import pandas as pd
 import torch
 import numpy as np
 from collections import Counter
+from utils.parse_config import get_config
+from utils.statistics import get_targets_repartition
 
-MAPPING_DICT = {
-    -2:0,
-    -1:1,
-    0:2,
-    1:3,
-    2:4,
-    3:5
-}
+MAPPING_DICT = {-2: 0, -1: 1, 0: 2, 1: 3, 2: 4, 3: 5}
 
-def mapping_slope_to_index(seq:list[int]):
+
+def mapping_slope_to_index(seq: list[int]):
     return [MAPPING_DICT[element] for element in seq]
 
 
-def fetch_data_for_training(stop:int|None=None,see_stats:bool=False):
+def fetch_data_for_training(
+    stop: int | None = None, see_stats: bool = False, normalize_input: bool = True
+):
     """
     _summary_
 
@@ -26,7 +24,8 @@ def fetch_data_for_training(stop:int|None=None,see_stats:bool=False):
     _type_
         _description_
     """
-    path = "data/"
+    config = get_config()
+    path = config["data"]["path"]
     path_read_data = path + "learning_test.fa"
     path_read_par = path + "learning_test_parameters.txt"
     path_read_sol = path + "learning_test_states.fa"
@@ -41,9 +40,13 @@ def fetch_data_for_training(stop:int|None=None,see_stats:bool=False):
     # utils
     text2float = lambda x: [np.float32(n) for n in x]
     text2int = lambda x: [np.int32(n) for n in x]
+    std_error = lambda x, x_mean: np.sqrt(sum([(x[i] - x_mean) ** 2 for i in range(x)]))
 
     # read_data processing
     df_data = df["read_data"].apply(text2float)
+    # if normalize_input:
+    # mean = df_data.mean(axis=1)
+    # std_error = df_data.std()
     inputs_list = df_data.to_list()
     inputs_list = [torch.tensor(input) for input in inputs_list]
 
@@ -53,15 +56,12 @@ def fetch_data_for_training(stop:int|None=None,see_stats:bool=False):
     df_sol = df_sol.apply(mapping_slope_to_index)
     # To see class repartition
     if see_stats:
-        stats = {0:0,1:0,2:0,3:0,4:0,5:0}
-        for row in df_sol:
-            stat_row = dict(Counter(row))
-            for key in stats.keys():
-                stats[key]+=stat_row[key] if key in stat_row.keys() else 0 
+        stats = get_targets_repartition(df_sol=df_sol)
         print(f" Stats : {stats}")
     targets_list = df_sol.to_list()
     targets_list = [torch.tensor(target) for target in targets_list]
-    return inputs_list,targets_list
+    return inputs_list, targets_list
+
 
 if __name__ == "__main__":
     fetch_data_for_training()
