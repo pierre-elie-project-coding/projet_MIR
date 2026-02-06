@@ -6,6 +6,7 @@ from torchmetrics.classification import MulticlassF1Score
 from data_process.process_data import fetch_data_for_training
 from utils.parse_config import get_config
 from utils.get_loss_and_optimizer import get_loss,get_optimizer
+from utils.statistics import get_targets_repartition, build_weights
 import os
 
 
@@ -16,9 +17,13 @@ def train_mlp(stop: int | None = None):
     optimizer_name = config["training"]["mlp"]["optimizer"]
     loss_name = config["training"]["mlp"]["loss"]
     learning_rate = config["training"]["mlp"]["lr"]
+    epochs = config["training"]["mlp"]["epoch"]
+    precision = config["model"]["mlp"]["precision"]
+    return_weights_for_loss = config["training"]["mlp"]["loss_weight"]
 
     # Fetching data
-    inputs, labels = fetch_data_for_training(stop=stop)
+    inputs, labels, weights = fetch_data_for_training(stop=stop,return_weights_for_loss=return_weights_for_loss)
+
     train_dataloader, test_dataloader = preprocess_data_for_mlp(
         input_tensor=inputs, labels=labels
     )
@@ -29,24 +34,28 @@ def train_mlp(stop: int | None = None):
         if torch.accelerator.is_available()
         else "cpu"
     )
+
     print(f"Using {device} device")
+    print(f"Training model in {precision} precision")
 
     # Instance of the mlp class
     model = MlpSlidingWindow(window_size=sliding_window_size).to(device)
+    if precision == "half":    
+        model.to(torch.half)
 
     # TODO tune both of them to improve
     # Loss function 
-    weight = torch.tensor(
-        [2.5, 3.8, 1.0, 3.8, 2.5, 3.2], dtype=torch.float32
-    )  # TODO automate the calculation
-    loss_params = {"weight":weight}
+    # weight = torch.tensor(
+    #     [2.5, 3.8, 1.0, 3.8, 2.5, 3.2], dtype=torch.float32
+    # ) 
+    loss_params = {"weight":weights}
+    print(f"Loss params : {loss_params}")
     loss_fn = get_loss(loss=loss_name,**loss_params)
     # Optimizer
     optim_params = {"lr":learning_rate}
     optimizer = get_optimizer(optim=optimizer_name,model_params=model.parameters(),**optim_params)
 
     # Training loop : TODO adding batch normalization + tuning epoch number
-    epochs = 5
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
         train(train_dataloader, model, loss_fn, optimizer, device=device)
@@ -59,23 +68,6 @@ def train_mlp(stop: int | None = None):
 
 
 def train(dataloader, model, loss_fn, optimizer, device: str = "cpu"):
-    """
-    Train a model on a dataset
-
-    Parameters
-    ----------
-    dataloader :
-        dataloader of the data
-    model :
-        model to train
-    loss_fn :
-        loss function to use
-    optimizer :
-        optimizer for backprop to use
-    device :
-        device to train the model on
-    """
-
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
@@ -83,9 +75,6 @@ def train(dataloader, model, loss_fn, optimizer, device: str = "cpu"):
 
         # Compute prediction error
         pred = model(X)
-        # TODO remove : Logs
-        # predicted_classes = pred.argmax(1)
-        # print(f"Classes prédites : {torch.unique(predicted_classes, return_counts=True)}")
         loss = loss_fn(pred, y)
 
         # Backpropagation
@@ -109,8 +98,6 @@ def test(dataloader, model, loss_fn, device: str = "cpu"):
         for X, y in dataloader:
             X, y = X.to(device), y.to(device)
             pred = model(X)
-            # predicted_classes = pred.argmax(1)
-            # print(f"Classes prédites : {torch.unique(predicted_classes, return_counts=True)}")
             test_loss += loss_fn(pred, y).item()
             correct += (pred.argmax(1) == y).type(torch.float).sum().item()
             size += y.numel()

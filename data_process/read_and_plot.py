@@ -30,9 +30,9 @@ def read_data_from_text(
                 break
             result = file[i].split("{", 1)
             id = result[0].strip()
-            dict = "{" + result[1].strip()
+            dict_data = "{" + result[1].strip()
             if id in df.index:
-                df.at[id, "read_par"] = ast.literal_eval(dict)
+                df.at[id, "read_par"] = ast.literal_eval(dict_data)
 
     # reading read_sol
     with open(path_read_sol, "r", encoding="utf-8") as f:

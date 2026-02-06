@@ -14,6 +14,7 @@ epoch = 5
 with_split = 0.8 # train / test split
 shuffle = true # to shuffle in the dataloader
 loss = "cross_entropy"
+loss_weight = true
 optimizer = "adam"
 weight_decay = 0.01
 lr = 1e-3

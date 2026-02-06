@@ -8,7 +8,7 @@ def train_models():
     print("=" * 150)
 
     # Training the naive mlp
-    train_mlp(stop=512)
+    train_mlp(stop=1024)
     print("=" * 150)
     print("Finished training")
     print("=" * 150)

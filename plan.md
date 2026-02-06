@@ -1,7 +1,8 @@
 ## TODO
-- Make a decorator to benchmark the time of different functions : @benchmark_time / so I can improve them later
-- Automate the weight for the classification.
-- normalize the inputs between [-1,1]
+- Make a decorator to benchmark the time of different functions : @benchmark_time / so I can improve them later    |
+- normalize the inputs between [-1,1]                                                                              |
+- add a decorator to write the log the output/parameters in a md file                                              |  importance
+- plot the output                                                                                                  V
 
 ## Models
 
@@ -30,7 +31,9 @@ Depending on the size of the window it might not be very interesting. It might a
 3) I normalize the input, because ReLU is made for input that can be negative. 
 
 **Things we need to watch out**
-We should probably normalize the test dataset input with the value parameters on the train dataset, because for the inference the neural network doesn't have access to the mean or variance of the future inputs.
+- We should normalize the inputs between [-1,1]
+- We should also probably normalize the test dataset input with the value parameters on the train dataset, because for the inference the neural network doesn't have access to the mean or variance of the future inputs.
+- F1-score can be improve with early stopping at epoch 5 the model might overfit.
 
 
 ### Unet

@@ -4,7 +4,7 @@ import torch
 import numpy as np
 from collections import Counter
 from utils.parse_config import get_config
-from utils.statistics import get_targets_repartition
+from utils.statistics import build_weights, get_targets_repartition
 
 MAPPING_DICT = {-2: 0, -1: 1, 0: 2, 1: 3, 2: 4, 3: 5}
 
@@ -14,7 +14,7 @@ def mapping_slope_to_index(seq: list[int]):
 
 
 def fetch_data_for_training(
-    stop: int | None = None, see_stats: bool = False, normalize_input: bool = True
+    stop: int | None = None, normalize_input: bool = True, return_weights_for_loss:bool=False
 ):
     """
     _summary_
@@ -54,14 +54,16 @@ def fetch_data_for_training(
     df_sol = df["read_sol"].apply(text2float)
     df_sol = df_sol.apply(text2int)
     df_sol = df_sol.apply(mapping_slope_to_index)
-    # To see class repartition
-    if see_stats:
-        stats = get_targets_repartition(df_sol=df_sol)
-        print(f" Stats : {stats}")
     targets_list = df_sol.to_list()
+    if return_weights_for_loss: # To see calculate class repartition and weight penalties for loss
+        repartition = get_targets_repartition(df_sol=df_sol)
+        print(f"Repartition : {repartition}")
+        weights = build_weights(repartition=repartition,power=2)
+    else:
+        weights=None
     targets_list = [torch.tensor(target) for target in targets_list]
-    return inputs_list, targets_list
 
+    return (inputs_list, targets_list, weights)
 
 if __name__ == "__main__":
     fetch_data_for_training()

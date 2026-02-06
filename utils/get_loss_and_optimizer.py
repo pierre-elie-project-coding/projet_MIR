@@ -11,9 +11,11 @@ def get_loss(loss: str ,**loss_params):
 
 
 def get_optimizer(optim: str, model_params,**optim_params):
-    if optim.lower() == "SGD":
+    if optim.lower() == "sgd":
         return torch.optim.SGD(model_params,**optim_params)
     if optim.lower() == "adam":
         return torch.optim.Adam(model_params,**optim_params)
+    if optim.lower() == "adamw":
+        return torch.optim.AdamW(model_params,**optim_params)
     else:
         raise ValueError(f"Optimizer : {optim} not supported")
