@@ -14,7 +14,7 @@ def mapping_slope_to_index(seq: list[int]):
 
 
 def fetch_data_for_training(
-    stop: int | None = None, normalize_input: bool = True, return_weights_for_loss:bool=False
+    stop: int | None = None, normalize_input: bool = True, return_weights_for_loss:bool=False # normalize_input not implemented yet
 ):
     """
     _summary_
@@ -66,4 +66,4 @@ def fetch_data_for_training(
     return (inputs_list, targets_list, weights)
 
 if __name__ == "__main__":
-    fetch_data_for_training()
+    fetch_data_for_training(return_weights_for_loss=True)

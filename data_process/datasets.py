@@ -39,3 +39,11 @@ class LazySlidingWindowDataset:
         return torch.tensor(window).to(torch.float32), torch.tensor(target).to(
             torch.long
         )
+    
+class UnetDataset:
+    def __init__(self) -> None:
+        pass
+    def __len__(self):
+        pass
+    def __getitem__(self,idx):
+        pass

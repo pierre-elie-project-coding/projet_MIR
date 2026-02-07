@@ -6,7 +6,6 @@ from torchmetrics.classification import MulticlassF1Score
 from data_process.process_data import fetch_data_for_training
 from utils.parse_config import get_config
 from utils.get_loss_and_optimizer import get_loss,get_optimizer
-from utils.statistics import get_targets_repartition, build_weights
 import os
 
 
@@ -45,9 +44,6 @@ def train_mlp(stop: int | None = None):
 
     # TODO tune both of them to improve
     # Loss function 
-    # weight = torch.tensor(
-    #     [2.5, 3.8, 1.0, 3.8, 2.5, 3.2], dtype=torch.float32
-    # ) 
     loss_params = {"weight":weights}
     print(f"Loss params : {loss_params}")
     loss_fn = get_loss(loss=loss_name,**loss_params)
@@ -55,19 +51,29 @@ def train_mlp(stop: int | None = None):
     optim_params = {"lr":learning_rate}
     optimizer = get_optimizer(optim=optimizer_name,model_params=model.parameters(),**optim_params)
 
-    # Training loop : TODO adding batch normalization + tuning epoch number
+    # Training loop : TODO tuning epoch number
+    epochs_list = []
+    loss_list = []
+    accuracy_list = []
+    f1score_list=  []
     for t in range(epochs):
         print(f"Epoch {t + 1}\n-------------------------------")
+        epochs_list.append(t+1)
         train(train_dataloader, model, loss_fn, optimizer, device=device)
-        test(test_dataloader, model, loss_fn, device=device)
+        loss_current ,accuracy_current ,f1score_current = test(test_dataloader, model, loss_fn, device=device)
+        loss_list.append(loss_current)
+        accuracy_list.append(accuracy_current)
+        f1score_list.append(f1score_current)
     print("Done!")
 
     os.makedirs("weights/mlp_sw", exist_ok=True)
     torch.save(model.state_dict(), "weights/mlp_sw/mlp_sliding_window_model.pth")
     print("Saved PyTorch Model State to weights/mlp_sw/mlp_sliding_window_model.pth")
 
+    return epochs_list ,loss_list ,accuracy_list ,f1score_list 
 
 def train(dataloader, model, loss_fn, optimizer, device: str = "cpu"):
+    loss_list = []
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
@@ -84,12 +90,17 @@ def train(dataloader, model, loss_fn, optimizer, device: str = "cpu"):
 
         if batch % 100 == 0:
             loss_value, current = loss.item(), (batch + 1) * len(X)
+            loss_list.append(loss_value)
             print(f"loss: {loss_value:>7f}  [{current:>5d}/{size:>5d}]")
+    return loss_list
 
 
 def test(dataloader, model, loss_fn, device: str = "cpu"):
     num_batches = len(dataloader)
     model.eval()
+    # loss_list = []
+    # accuracy_list = []
+    # f1score_list = []
     size = 0
     test_loss, correct = 0, 0
     metric = MulticlassF1Score(num_classes=6).to(device=device)
@@ -110,3 +121,4 @@ def test(dataloader, model, loss_fn, device: str = "cpu"):
     print(
         f"Test Error: \n F1-score : {(100 * f1score_mean):>0.1f}% Accuracy: {(100 * correct):>0.1f}%, Avg loss: {test_loss:>8f} \n"
     )
+    return test_loss,correct,f1score_mean # correct is the accuracy

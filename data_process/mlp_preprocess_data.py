@@ -43,5 +43,5 @@ def preprocess_data_for_mlp(
 
 
 if __name__ == "__main__":
-    inputs, labels = fetch_data_for_training()
+    inputs, labels, weights = fetch_data_for_training()
     preprocess_data_for_mlp(input_tensor=inputs, labels=labels)
