@@ -2,6 +2,7 @@
 - Make a decorator to benchmark the time of different functions : @benchmark_time / so I can improve them later    |
 - normalize the inputs between [-1,1]                                                                              |
 - early stopping
+- saving the run logs in a file
 - plot training and test loss
 - changing padding to a config.toml option between 0s and reverse padding                                          |  importance
 - unet                                                                                                             V

@@ -1,6 +1,6 @@
 name = "ProjetMIR"
 seed = 42
-train = "mlp"
+train = "unet"
 result_file = "results.md"
 log_file = "log.md"
 
@@ -20,6 +20,24 @@ with_split = 0.8 # train / test split
 shuffle = true # to shuffle in the dataloader
 loss = "cross_entropy"
 loss_weight = true
+optimizer = "adam"
+weight_decay = 0.01
+lr = 1e-3
+
+
+[model.unet]
+sliding_window_size = 128  # size of the context window / !!  Mandatory : Must be a 16 multiple to match dimension crop and increase in the Unet !!
+precision = "full" # precision for the models weights
+padding = 1 
+
+[training.unet]
+stop = 512
+batch_size = 32
+epoch = 7
+with_split = 0.8 # train / test split
+shuffle = true # to shuffle in the dataloader
+loss = "cross_entropy"
+loss_weight = false
 optimizer = "adam"
 weight_decay = 0.01
 lr = 1e-3

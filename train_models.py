@@ -1,4 +1,5 @@
 from models.train_mlp import train_mlp
+from models.train_unet import train_unet
 from utils.parse_config import get_config
 from utils.write_output import save_metrics
 
@@ -15,6 +16,10 @@ def train_models():
     if model_to_train == "mlp":
         # Training the naive mlp
         (epochs,loss,accuracy,f1score) = train_mlp(stop=stop)
+        save_metrics(epochs=epochs,loss=loss,accuracy=accuracy,f1score=f1score)
+    elif model_to_train == "unet":
+        print(f"Stopping at {stop}")
+        (epochs,loss,accuracy,f1score) = train_unet(stop=stop)
         save_metrics(epochs=epochs,loss=loss,accuracy=accuracy,f1score=f1score)
 
     print("=" * 150)
