@@ -44,3 +44,16 @@ Config training : {'stop': 64, 'batch_size': 32, 'epoch': 5, 'with_split': 0.8, 
 Config model : {'sliding_window_size': 128, 'precision': 'full', 'padding': 1} 
 Config training : {'stop': 128, 'batch_size': 32, 'epoch': 7, 'with_split': 0.8, 'shuffle': True, 'loss': 'cross_entropy', 'loss_weight': False, 'optimizer': 'adam', 'weight_decay': 0.01, 'lr': 0.001}
 
+### Trained model : unet - Date : 2026-02-09 
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|90.5%|79.0%|0.2328857964122145|-|
+|2|93.1%|82.1%|0.1767536742195534|-|
+|3|95.9%|88.2%|0.1145707942231056|-|
+|4|96.3%|88.8%|0.10621004909782286|-|
+|5|97.3%|91.4%|0.07603493264996761|-|
+|6|97.8%|93.4%|0.06434579906920529|-|
+|7|98.1%|94.0%|0.051806728164621334|-|
+Config model : {'sliding_window_size': 128, 'precision': 'full', 'padding': 1} 
+Config training : {'stop': 512, 'batch_size': 32, 'epoch': 7, 'with_split': 0.8, 'shuffle': True, 'loss': 'cross_entropy', 'loss_weight': False, 'optimizer': 'adam', 'weight_decay': 0.01, 'lr': 0.001}
+

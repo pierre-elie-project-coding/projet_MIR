@@ -25,6 +25,7 @@ def fetch_data_for_training(
         _description_
     """
     config = get_config()
+    not_below = config["not_below"]
     path = config["data"]["path"]
     path_read_data = path + "learning_test.fa"
     path_read_par = path + "learning_test_parameters.txt"
@@ -35,6 +36,7 @@ def fetch_data_for_training(
         path_read_par=path_read_par,
         path_read_sol=path_read_sol,
         stop=stop,
+        not_below=not_below
     )
 
     # utils

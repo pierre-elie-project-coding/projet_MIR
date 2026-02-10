@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def read_data_from_text(
-    path_read_data: str, path_read_par: str, path_read_sol: str, stop: int | None = None
+    path_read_data: str, path_read_par: str, path_read_sol: str, stop: int | None = None, not_below:int | None = None
 ) -> pd.DataFrame:
     df = pd.DataFrame(columns=["read_id", "read_data", "read_par", "read_sol"])
 
@@ -17,6 +17,8 @@ def read_data_from_text(
         for i in range(int(len(file) / 2)):
             if stop and (2 * i >= stop):
                 break
+            if not_below and len(file[2*i+1].split()) < not_below:
+                continue
             df.loc[i] = [file[2 * i], file[2 * i + 1].split(), pd.NA, pd.NA]
     df = df.set_index("read_id")
 

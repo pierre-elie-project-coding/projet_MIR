@@ -3,6 +3,7 @@ seed = 42
 train = "unet"
 result_file = "results.md"
 log_file = "log.md"
+not_below = 150 # cut the signal of length below this value
 
 
 [data]
@@ -26,7 +27,7 @@ lr = 1e-3
 
 
 [model.unet]
-sliding_window_size = 128  # size of the context window / !!  Mandatory : Must be a 16 multiple to match dimension crop and increase in the Unet !!
+sliding_window_size = 160  # size of the context window / !!  Mandatory : Must be a 16 multiple to match dimension crop and increase in the Unet !!
 precision = "full" # precision for the models weights
 padding = 1 
 

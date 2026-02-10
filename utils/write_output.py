@@ -21,7 +21,7 @@ def save_metrics(epochs:list[int]=[],loss:list[float]=[],accuracy:list[float]=[]
 
     config_md = f"Config model : {str(config_model)} \nConfig training : {str(config_training)}\n"
 
-    md_content = "\n" + title + content + config_md + "\n"
+    md_content = "\n" + title + content + config_md
     with open(file,"a") as f:
         f.write(md_content)
         
