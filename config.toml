@@ -8,6 +8,7 @@ not_below = 150 # cut the signal of length below this value
 
 [data]
 path = "data/"
+num_workers = 0 # num workers for the dataloader cf pytorch doc
 
 [model.mlp]
 sliding_window_size = 51 # size of the context window

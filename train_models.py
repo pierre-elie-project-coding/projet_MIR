@@ -18,7 +18,7 @@ def train_models():
         (epochs,loss,accuracy,f1score) = train_mlp(stop=stop)
         save_metrics(epochs=epochs,loss=loss,accuracy=accuracy,f1score=f1score)
     elif model_to_train == "unet":
-        print(f"Stopping at {stop}")
+        print(f"Stopping at {stop}") if stop else print(f"Using all dataset")
         (epochs,loss,accuracy,f1score) = train_unet(stop=stop)
         save_metrics(epochs=epochs,loss=loss,accuracy=accuracy,f1score=f1score)
 

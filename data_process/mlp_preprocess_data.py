@@ -18,6 +18,7 @@ def preprocess_data_for_mlp(
     seed = config["seed"]
     with_split = config["training"]["mlp"]["with_split"]
     sliding_window_size = config["model"]["mlp"]["sliding_window_size"]
+    num_workers = config["data"]["num_workers"]
 
     dataset = LazySlidingWindowDataset(
         input_tensor=input_tensor,
@@ -31,14 +32,14 @@ def preprocess_data_for_mlp(
             dataset=dataset, lengths=[with_split, 1 - with_split], generator=generator #type: ignore
         )  
         train_dataloader = DataLoader(
-            dataset=train_dataset, batch_size=batch_size, shuffle=shuffle
+            dataset=train_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers
         )
         test_dataloader = DataLoader(
-            dataset=test_dataset, batch_size=batch_size, shuffle=shuffle
+            dataset=test_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers
         )
         return train_dataloader, test_dataloader
 
-    dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=shuffle)  # type: ignore
+    dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)  # type: ignore
     return dataloader
 
 
