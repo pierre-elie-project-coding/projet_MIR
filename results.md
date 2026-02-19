@@ -57,3 +57,51 @@ Config training : {'stop': 128, 'batch_size': 32, 'epoch': 7, 'with_split': 0.8,
 Config model : {'sliding_window_size': 128, 'precision': 'full', 'padding': 1} 
 Config training : {'stop': 512, 'batch_size': 32, 'epoch': 7, 'with_split': 0.8, 'shuffle': True, 'loss': 'cross_entropy', 'loss_weight': False, 'optimizer': 'adam', 'weight_decay': 0.01, 'lr': 0.001}
 
+
+### Trained model : unet - Date : 2026-02-16 
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|89.8%|78.5%|0.2413192804382984|-|
+|2|92.7%|84.1%|0.18181560267196145|-|
+|3|94.3%|86.9%|0.1482062679823748|-|
+|4|94.9%|88.0%|0.1359123813629497|-|
+|5|80.8%|60.4%|0.44107784674264666|-|
+|6|80.7%|59.9%|0.4428562086508718|-|
+|7|81.0%|60.8%|0.43445667152834494|-|
+Config model : {'sliding_window_size': 256, 'precision': 'full', 'padding': 1} 
+Config training : {'stop': 8192, 'batch_size': 64, 'epoch': 7, 'with_split': 0.8, 'shuffle': True, 'loss': 'cross_entropy', 'loss_weight': False, 'optimizer': 'adam', 'weight_decay': 0.01, 'lr': 0.002}
+
+### Trained model : unet - Date : 2026-02-19 
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|91.6%|80.9%|0.2131732344344447|-|
+|2|96.5%|90.3%|0.09078982179718358|-|
+|3|97.8%|93.5%|0.05977094718246682|-|
+|4|97.9%|93.8%|0.05604787420811532|-|
+|5|98.3%|94.8%|0.047098032830394196|-|
+|6|98.0%|94.6%|0.05900314018116829|-|
+|7|92.9%|82.6%|0.15195689523494912|-|
+|8|99.2%|97.3%|0.023651329523447572|-|
+|9|99.1%|97.5%|0.026350939380692127|-|
+Config model : {'sliding_window_size': 256, 'precision': 'full', 'padding': 1} 
+Config training : {'stop': 512, 'batch_size': 32, 'epoch': 9, 'with_split': 0.8, 'shuffle': True, 'loss': 'cross_entropy', 'loss_weight': False, 'optimizer': 'adam', 'weight_decay': 0.01, 'lr': 0.001}
+
+### Trained model : unet - Date : 2026-02-19 
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|90.3%|79.6%|0.2359554580939937|-|
+|2|96.2%|89.9%|0.10309566265042824|-|
+|3|97.7%|93.1%|0.06846406330332618|-|
+|4|97.7%|93.4%|0.0681296518985283|-|
+|5|98.9%|96.7%|0.030115511257430474|-|
+|6|99.0%|97.1%|0.029181937441216346|-|
+|7|99.4%|98.2%|0.01780910610901714|-|
+|8|99.5%|98.3%|0.015572200472438017|-|
+|9|99.1%|97.3%|0.02618103162393944|-|
+|10|99.4%|98.4%|0.016159807402172394|-|
+|11|99.6%|98.9%|0.010980578045955241|-|
+|12|99.6%|98.9%|0.010161522991035747|-|
+|13|99.7%|99.0%|0.009426008208922598|-|
+|14|99.3%|98.1%|0.02199967756697312|-|
+Config model : {'sliding_window_size': 256, 'precision': 'full', 'padding': 1} 
+Config training : {'stop': 512, 'batch_size': 32, 'epoch': 14, 'with_split': 0.8, 'shuffle': True, 'loss': 'cross_entropy', 'loss_weight': False, 'optimizer': 'adam', 'weight_decay': 0.01, 'lr': 0.001}

@@ -3,12 +3,12 @@ seed = 42
 train = "unet"
 result_file = "results.md"
 log_file = "log.md"
-not_below = 150 # cut the signal of length below this value
+not_below = 255 # cut the signal of length below this value
 
 
 [data]
 path = "data/"
-num_workers = 0 # num workers for the dataloader cf pytorch doc
+num_workers = 2 # num workers for the dataloader cf pytorch doc
 
 [model.mlp]
 sliding_window_size = 51 # size of the context window
@@ -28,14 +28,14 @@ lr = 1e-3
 
 
 [model.unet]
-sliding_window_size = 160  # size of the context window / !!  Mandatory : Must be a 16 multiple to match dimension crop and increase in the Unet !!
+sliding_window_size = 256  # size of the context window / !!  Mandatory : Must be a 16 multiple to match dimension crop and increase in the Unet !!
 precision = "full" # precision for the models weights
 padding = 1 
 
 [training.unet]
 stop = 512
 batch_size = 32
-epoch = 7
+epoch = 14
 with_split = 0.8 # train / test split
 shuffle = true # to shuffle in the dataloader
 loss = "cross_entropy"
