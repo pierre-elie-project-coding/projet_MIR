@@ -1,5 +1,5 @@
 name = "ProjetMIR"
-seed = 42
+seed = 38 # 42
 train = "unet"
 result_file = "results.md"
 log_file = "log.md"
@@ -35,7 +35,7 @@ padding = 1
 [training.unet]
 stop = 512
 batch_size = 32
-epoch = 14
+epoch = 18
 with_split = 0.8 # train / test split
 shuffle = true # to shuffle in the dataloader
 loss = "cross_entropy"
