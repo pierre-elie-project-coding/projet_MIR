@@ -129,3 +129,11 @@ Config training : {'stop': 512, 'batch_size': 32, 'epoch': 14, 'with_split': 0.8
 |18|99.4%|98.2%|0.017265802744445922|-|
 Config model : {'sliding_window_size': 256, 'precision': 'full', 'padding': 1} 
 Config training : {'stop': 512, 'batch_size': 32, 'epoch': 18, 'with_split': 0.8, 'shuffle': True, 'loss': 'cross_entropy', 'loss_weight': False, 'optimizer': 'adam', 'weight_decay': 0.01, 'lr': 0.001}
+
+### Trained model : xgboost - Date : 2026-03-02 - Device : cpu
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|79.4%|52.0%|0.47574616481647186|-|
+Device : cpu - seed : 38 
+Config model : {'sliding_window_size': 11} 
+Config training : {'stop': 512, 'with_split': 0.8, 'n_estimators': 150, 'max_depth': 5}

@@ -1,6 +1,6 @@
 name = "ProjetMIR"
 seed = 38 # 42
-train = "unet"
+train = "xgboost"
 result_file = "results.md"
 log_file = "log.md"
 not_below = 255 # cut the signal of length below this value
@@ -43,3 +43,12 @@ loss_weight = false
 optimizer = "adam"
 weight_decay = 0.01
 lr = 1e-3
+
+[model.xgboost]
+sliding_window_size = 11
+
+[training.xgboost]
+stop = 512
+with_split = 0.8
+n_estimators = 150
+max_depth = 5

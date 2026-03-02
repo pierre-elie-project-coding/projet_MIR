@@ -11,5 +11,5 @@ dependencies = [
     "pandas>=3.0.0",
     "pytest>=9.0.2",
     "torch==2.7.1",
-    "torchmetrics>=1.8.2"
+    "torchmetrics>=1.8.2",
 ]
