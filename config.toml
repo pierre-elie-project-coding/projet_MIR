@@ -42,4 +42,4 @@ loss = "cross_entropy"
 loss_weight = false
 optimizer = "adam"
 weight_decay = 0.01
-lr = 1e-3
+lr = 1e-3 # lr should follow the batch size linearly (2*batch_size => 2*lr ) or with a root square ( 2*batch_size => sqrt(2)*lr)

@@ -5,17 +5,15 @@ build/
 dist/
 wheels/
 *.egg-info
-.pytest_cache
-.ruff_cache
 
 # Virtual environments
 .venv
 
-# Data folder
+# data
 data/
 
-# Model's weights
-weights/
+# personal setup
+setup.sh
 
-# Perso
-drive.md
+# models weights
+weights/
