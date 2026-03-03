@@ -137,3 +137,43 @@ Config training : {'stop': 512, 'batch_size': 32, 'epoch': 18, 'with_split': 0.8
 Device : cpu - seed : 38 
 Config model : {'sliding_window_size': 11} 
 Config training : {'stop': 512, 'with_split': 0.8, 'n_estimators': 150, 'max_depth': 5}
+
+### Trained model : xgboost - Date : 2026-03-03 - Device : cpu
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|82.7%|59.8%|0.417625438135594|-|
+Device : cpu - seed : 38 
+Config model : {'sliding_window_size': 11} 
+Config training : {'stop': 512, 'with_split': 0.8, 'n_estimators': 182, 'max_depth': 7, 'learning_rate': 0.2679, 'subsample': 0.8514, 'colsample_bytree': 0.6923}
+
+### Trained model : xgboost - Date : 2026-03-03 - Device : cpu
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|83.3%|60.9%|0.4051200272631379|-|
+Device : cpu - seed : 38 
+Config model : {'sliding_window_size': 11} 
+Config training : {'stop': 512, 'with_split': 0.8, 'n_estimators': 1000, 'max_depth': 7, 'learning_rate': 0.05, 'subsample': 0.8514, 'colsample_bytree': 0.6923}
+
+### Trained model : xgboost - Date : 2026-03-03 - Device : cpu
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|88.8%|75.2%|0.267348967558899|-|
+Device : cpu - seed : 38 
+Config model : {'sliding_window_size': 21} 
+Config training : {'stop': 512, 'with_split': 0.8, 'n_estimators': 1000, 'max_depth': 7, 'learning_rate': 0.05, 'subsample': 0.8514, 'colsample_bytree': 0.6923}
+
+### Trained model : xgboost - Date : 2026-03-03 - Device : cpu
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|95.9%|90.7%|0.10592973910492438|-|
+Device : cpu - seed : 38 
+Config model : {'sliding_window_size': 50} 
+Config training : {'stop': 512, 'with_split': 0.8, 'n_estimators': 1000, 'max_depth': 7, 'learning_rate': 0.05, 'subsample': 0.8514, 'colsample_bytree': 0.6923}
+
+### Trained model : xgboost - Date : 2026-03-03 - Device : cpu
+| Epoch    | Accuracy | F1 score | Loss | Training Time (s) |
+|-----------|-----------|-------|----------|---------------|
+|1|99.1%|97.8%|0.02410935587592112|-|
+Device : cpu - seed : 38 
+Config model : {'sliding_window_size': 256} 
+Config training : {'stop': 512, 'with_split': 0.8, 'n_estimators': 1000, 'max_depth': 7, 'learning_rate': 0.05, 'subsample': 0.8514, 'colsample_bytree': 0.6923}

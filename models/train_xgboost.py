@@ -15,14 +15,17 @@ def preprocess_data_for_xgboost(input_tensor, labels, window_size):
     """
     Extract sliding windows from input tensors and compute features.
     """
-    padding_size = int((window_size - 1) / 2)
+    pad_left = window_size // 2
+    pad_right = window_size - pad_left - 1
+    
     X_list = []
     y_list = []
     
     for i, (sig, target) in enumerate(zip(input_tensor, labels)):
         # Mirror padding for signal
-        start = sig[:padding_size].flip(dims=[0])
-        end = sig[-padding_size:].flip(dims=[0])
+        start = sig[:pad_left].flip(dims=[0]) if pad_left > 0 else torch.tensor([])
+        end = sig[-pad_right:].flip(dims=[0]) if pad_right > 0 else torch.tensor([])
+        
         padded_sig = torch.cat((start, sig, end), dim=0).numpy()
         
         target_np = target.numpy()
