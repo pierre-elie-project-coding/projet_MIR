@@ -9,11 +9,11 @@ from sklearn.metrics import accuracy_score, f1_score, log_loss
 from data_process.process_data import fetch_data_for_training
 from utils.parse_config import get_config
 from utils.write_output import save_metrics
-from models.xgboost import XGBoostStatePredictor
+from models.xgboost_model import XGBoostStatePredictor
 
 def preprocess_data_for_xgboost(input_tensor, labels, window_size):
     """
-    Extract sliding windows from input tensors.
+    Extract sliding windows from input tensors and compute features.
     """
     padding_size = int((window_size - 1) / 2)
     X_list = []
@@ -31,7 +31,23 @@ def preprocess_data_for_xgboost(input_tensor, labels, window_size):
         n = len(target_np)
         for j in range(n):
             window = padded_sig[j : j + window_size]
-            X_list.append(window)
+            
+            # Engineered features
+            mean_val = np.mean(window)
+            std_val = np.std(window)
+            min_val = np.min(window)
+            max_val = np.max(window)
+            p25 = np.percentile(window, 25)
+            p75 = np.percentile(window, 75)
+            median_val = np.median(window)
+            
+            # Combine raw window and features
+            features = np.concatenate([
+                window, 
+                [mean_val, std_val, min_val, max_val, p25, p75, median_val]
+            ])
+            
+            X_list.append(features)
             y_list.append(target_np[j])
             
     return np.array(X_list), np.array(y_list)
@@ -47,6 +63,9 @@ def train_xgboost(stop=None):
     with_split = xgb_config_training.get("with_split", 0.8)
     n_estimators = xgb_config_training.get("n_estimators", 150)
     max_depth = xgb_config_training.get("max_depth", 5)
+    learning_rate = xgb_config_training.get("learning_rate", 0.1)
+    subsample = xgb_config_training.get("subsample", 0.8)
+    colsample_bytree = xgb_config_training.get("colsample_bytree", 0.8)
     seed = config.get("seed", 42)
     
     print("=" * 150)
@@ -64,7 +83,13 @@ def train_xgboost(stop=None):
     print(f"Training XGBoost Classifier on {len(X_train)} windows...")
     start_time = time.time()
     
-    model = XGBoostStatePredictor(n_estimators=n_estimators, max_depth=max_depth)
+    model = XGBoostStatePredictor(
+        n_estimators=n_estimators, 
+        max_depth=max_depth,
+        learning_rate=learning_rate,
+        subsample=subsample,
+        colsample_bytree=colsample_bytree
+    )
     model.fit(X_train, y_train)
     
     print(f"Training finished in {time.time() - start_time:.2f} seconds.")

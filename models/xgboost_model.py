@@ -9,11 +9,17 @@ class XGBoostStatePredictor:
         """
         n_estimators = kwargs.get('n_estimators', 150)
         max_depth = kwargs.get('max_depth', 5)
+        learning_rate = kwargs.get('learning_rate', 0.1)
+        subsample = kwargs.get('subsample', 0.8)
+        colsample_bytree = kwargs.get('colsample_bytree', 0.8)
         
         self.model = xgb.XGBClassifier(
             objective='multi:softmax',
             n_estimators=n_estimators,
             max_depth=max_depth,
+            learning_rate=learning_rate,
+            subsample=subsample,
+            colsample_bytree=colsample_bytree,
             n_jobs=-1
         )
         self.state_classes = None
@@ -50,8 +56,8 @@ class XGBoostStatePredictor:
         """
         Post-processing: smooth predictions into piecewise constant plateaus.
         """
-        # 1. Median filter
-        smoothed = medfilt(predictions, kernel_size=5)
+        # 1. Median filter (increased kernel size for robustness against noisy predictions)
+        smoothed = medfilt(predictions, kernel_size=11)
         
         # 2. Change point detection & piecewise constant filling
         result = np.copy(smoothed)
