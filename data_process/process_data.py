@@ -14,7 +14,7 @@ def mapping_slope_to_index(seq: list[int]):
 
 
 def fetch_data_for_training(
-    stop: int | None = None, normalize_input: bool = True, return_weights_for_loss:bool=False # normalize_input not implemented yet
+    stop: int | None = None, normalize_input: bool = True,return_weights_for_loss:bool=False # normalize_input not implemented yet
 ):
     """
     _summary_
@@ -47,7 +47,7 @@ def fetch_data_for_training(
     # read_data processing
     df_data = df["read_data"].apply(text2float)
     # if normalize_input:
-    # mean = df_data.mean(axis=1)
+    #     mean = df_data.mean(axis=1)
     # std_error = df_data.std()
     inputs_list = df_data.to_list()
     inputs_list = [torch.tensor(input) for input in inputs_list]

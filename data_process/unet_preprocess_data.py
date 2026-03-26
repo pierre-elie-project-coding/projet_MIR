@@ -37,6 +37,7 @@ def preprocess_data_for_unet(
         test_dataloader = DataLoader(
             dataset=test_dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers
         )
+        # torch.save(test_dataloader,"test_dataloader.pth")
         return train_dataloader, test_dataloader
 
     dataloader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)  # type: ignore
