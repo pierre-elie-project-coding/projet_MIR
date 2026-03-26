@@ -57,26 +57,19 @@ def read_data_from_text(
 def build_affine_signal(signal: list[int]) -> list[int]:
     """
     1=monte 2= descend  ( -1=monte -2= descend mais dans l'autre sens) 3=plateau haut 0= plateau bas
-
-    Parameters
-    ----------
-    signal : list[int]
-
-    Returns
-    -------
-    list[int]
-        the affine signal
     """
     step = 1  # TODO :change this value and link it to reality
-    affine_signal = [0]  # TODO watch this init, may falsely shift values
+    affine_signal = [] 
+    current_val = 0
 
     for v in signal:
-        if v == 1 or v == -2:
-            affine_signal.append(affine_signal[-1] + step)
-        if v == 2 or v == -1:
-            affine_signal.append(affine_signal[-1] - step)
-        if v == 0 or v == 3:
-            affine_signal.append(affine_signal[-1])
+        if v in [1, 2]:           # Pente positive du profil temporel
+            current_val += step
+        elif v in [-1, -2]:       # Pente négative du profil temporel
+            current_val -= step
+        # Si v == 0 ou v == 3, current_val ne change pas
+        
+        affine_signal.append(current_val)
 
     return affine_signal
 

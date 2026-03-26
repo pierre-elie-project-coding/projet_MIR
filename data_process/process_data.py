@@ -1,3 +1,5 @@
+from sklearn.utils import shuffle
+
 from data_process.read_and_plot import read_data_from_text
 import pandas as pd
 import torch
@@ -14,7 +16,7 @@ def mapping_slope_to_index(seq: list[int]):
 
 
 def fetch_data_for_training(
-    stop: int | None = None, normalize_input: bool = True,return_weights_for_loss:bool=False # normalize_input not implemented yet
+    to_shuffle:int | None = None, stop: int | None = None, normalize_input: bool = True,return_weights_for_loss:bool=False # normalize_input not implemented yet
 ):
     """
     _summary_
@@ -39,24 +41,28 @@ def fetch_data_for_training(
         not_below=not_below
     )
 
+    if to_shuffle is not None:
+        from sklearn.utils import shuffle
+        df = shuffle(df, random_state=to_shuffle)
+
     # utils
     text2float = lambda x: [np.float32(n) for n in x]
     text2int = lambda x: [np.int32(n) for n in x]
     std_error = lambda x, x_mean: np.sqrt(sum([(x[i] - x_mean) ** 2 for i in range(x)]))
 
     # read_data processing
-    df_data = df["read_data"].apply(text2float)
+    df_data = df["read_data"].apply(text2float) #type:ignore
     # if normalize_input:
     #     mean = df_data.mean(axis=1)
     # std_error = df_data.std()
-    inputs_list = df_data.to_list()
+    inputs_list = df_data.to_list() #type:ignore
     inputs_list = [torch.tensor(input) for input in inputs_list]
 
     # read_sol processing
-    df_sol = df["read_sol"].apply(text2float)
+    df_sol = df["read_sol"].apply(text2float) #type:ignore
     df_sol = df_sol.apply(text2int)
     df_sol = df_sol.apply(mapping_slope_to_index)
-    targets_list = df_sol.to_list()
+    targets_list = df_sol.to_list() #type:ignore
     if return_weights_for_loss: # To see calculate class repartition and weight penalties for loss
         repartition = get_targets_repartition(df_sol=df_sol)
         print(f"Repartition : {repartition}")
