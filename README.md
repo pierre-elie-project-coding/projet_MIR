@@ -28,13 +28,13 @@ To tackle this problem, the repository implements multiple Deep Learning archite
 
 ## Prerequisites
 - **Python:** `>= 3.13`
-- **Package Manager:** `uv` (recommended, as indicated by `uv.lock`) or `pip`.
+- **Package Manager:** `uv` (recommended) or `pip`.
 
 ## Installation
 
 1. Clone the repository and navigate to the project directory:
    ```bash
-   cd etape1
+   cd DNA-replication
    ```
 
 2. Install dependencies using `uv` (or pip):
