@@ -148,7 +148,7 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
         plt.tight_layout()
         plt.savefig(f"graphics/{model_name}-simulated-{index}.png", dpi=300, bbox_inches='tight')
         # 5. Affichage
-        plt.show()
+        # plt.show()
 
     ## Real Data
     print(f"Model inference on real data")
@@ -162,9 +162,9 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(18, 8))
 
         ax1.plot(x, inputs_real[index], color="green")
-        ax1.set_title("Source of truth")
+        ax1.set_title("Rate of BrdU incorporation")
         ax1.set_xlabel("Position")
-        ax1.set_ylabel("Temps")
+        ax1.set_ylabel("BrdU")
 
         # 4. Remplissage du deuxième graphique
         well_formated_pred = [INDEX_TO_SLOPE[int(i)] for i in pred ]
@@ -178,7 +178,7 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
         plt.tight_layout()
         plt.savefig(f"graphics/{model_name}-realdata-{index}.png", dpi=300, bbox_inches='tight')
         # 5. Affichage
-        plt.show()
+        # plt.show()
 
 
     ### Real Data
@@ -189,7 +189,7 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
 
 if __name__=="__main__":
     seed = 25
-    show_results(real_data_path="data/BT10_100uM_RefBT1multi_analysis_E.df",number_real_data=10,number_training_data=10,seed=seed,model_name="mlp")
+    show_results(real_data_path="data/BT10_100uM_RefBT1multi_analysis_E.df",number_real_data=10,number_training_data=10,seed=seed,model_name="unet")
 
 
 
