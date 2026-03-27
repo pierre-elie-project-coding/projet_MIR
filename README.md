@@ -34,7 +34,7 @@ To tackle this problem, the repository implements multiple Deep Learning archite
 
 1. Clone the repository and navigate to the project directory:
    ```bash
-   cd DNA-replication
+   cd projet_MIR
    ```
 
 2. Install dependencies using `uv` (or pip):
