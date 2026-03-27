@@ -1,4 +1,4 @@
-# Projet MIR - Étape 1
+# Projet MIR 
 
 ## Description
 This project focuses on analyzing 1D signals (representing the rate of BrdU incorporation) to predict their temporal profile. The problem is formulated as a 6-class classification task, where the goal is to predict the local slopes (`-2, -1, 0, 1, 2, 3`) of the signal at any given position.
