@@ -53,17 +53,14 @@ def load_data(seed:int,real_data_path:str,number_real_data:int=5):
 
 def predict_single_signal(model, signal_1d, window_size=512, batch_size=256, model_name="unet"):
     """
-    Évalue un signal complet avec une fenêtre glissante sans utiliser de Dataset.
+    Evaluate signal using a sliding window.
     """
     model.eval()
     
-    # On décommente ! (Sinon le MLP va planter s'il est sur GPU)
     device = next(model.parameters()).device
     signal_1d = signal_1d.to(device)
     
     padding_size = int((window_size - 1) / 2)
-    # Pour le U-Net, vous aviez un +2 arbitraire dans le padding de votre Dataset.
-    # Je le garde uniquement pour le U-Net pour rester cohérent avec votre entraînement.
     if model_name == "unet":
         padding_size += 2 
 
@@ -73,15 +70,12 @@ def predict_single_signal(model, signal_1d, window_size=512, batch_size=256, mod
 
     windows = padded_signal.unfold(0, window_size, step=1)
     
-    # Pour le U-Net, on doit rajouter la dimension Channel : (N, 1, window_size)
-    # Pour le MLP, une entrée (N, window_size) est souvent préférée pour des Linear layers,
-    # mais gardons le unsqueeze(1) si votre entraînement s'est fait comme ça.
+    # Add channel dimension: (N, 1, window_size)
     windows = windows.unsqueeze(1) 
     
     num_windows = windows.shape[0]
     all_predictions = []
     
-    # Uniquement pour le U-Net
     center_idx = window_size // 2  
 
     with torch.no_grad():
@@ -91,19 +85,15 @@ def predict_single_signal(model, signal_1d, window_size=512, batch_size=256, mod
             logits = model(batch_windows)
             
             if model_name == "unet":
-                # Sortie : (Batch, 6 classes, window_size)
-                # On extrait la prédiction du milieu
+                # Extract center point prediction
                 logits_target = logits[:, :, center_idx]
             elif model_name == "mlp":
-                # Sortie : (Batch, 1 channel, 6 classes) ou (Batch, 6 classes)
-                # Le MLP a DEJA deviné la valeur du point central (c'est son job).
-                # On s'assure juste d'avoir une forme (Batch, 6 classes)
+                # MLP output: ensure (Batch, Classes) shape
                 if len(logits.shape) == 3: 
-                    logits_target = logits.squeeze(1) # Retire la dimension Channel si elle est là
+                    logits_target = logits.squeeze(1)
                 else:
                     logits_target = logits
             
-            # On prend la classe la plus probable (0 à 5)
             preds = torch.argmax(logits_target, dim=1)
             all_predictions.append(preds.cpu())
 
@@ -118,14 +108,11 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
     inputs_real = load_data(seed=seed,real_data_path=real_data_path,number_real_data=number_real_data)
     model, device, model_name, sliding_window_size = load_model(config=config,model_name=model_name)
 
-
-    ## Simulated 
     print(f"Model inference on simulated data")
     preds_simulated = []
     for sig in inputs_simulated:
         preds_simulated.append(predict_single_signal(model=model,signal_1d=sig,window_size=sliding_window_size,batch_size=64,model_name=model_name))
 
-    ### Plot Simulated
     for index,pred in enumerate(preds_simulated):
         size_el = pred.shape[0]
         well_formated_pred = [INDEX_TO_SLOPE[int(i)] for i in pred ]
@@ -138,19 +125,14 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
         ax1.set_xlabel("Position")
         ax1.set_ylabel("Temps")
 
-        # 4. Remplissage du deuxième graphique (à droite)
-        ax2.plot(x, well_formated_pred, color="orange") # J'utilise un diagramme en barres ici pour l'exemple
+        ax2.plot(x, well_formated_pred, color="orange")
         ax2.set_title(f"{model_name} Prediction")
         ax2.set_xlabel("Position")
         ax2.set_ylabel("Temps")
 
-        # Ajuste automatiquement les espacements pour éviter que les textes ne se chevauchent
         plt.tight_layout()
         plt.savefig(f"graphics/{model_name}-simulated-{index}.png", dpi=300, bbox_inches='tight')
-        # 5. Affichage
-        # plt.show()
 
-    ## Real Data
     print(f"Model inference on real data")
     preds_real = []
     for sig in inputs_real:
@@ -166,7 +148,6 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
         ax1.set_xlabel("Position")
         ax1.set_ylabel("BrdU")
 
-        # 4. Remplissage du deuxième graphique
         well_formated_pred = [INDEX_TO_SLOPE[int(i)] for i in pred ]
         pred = build_affine_signal(well_formated_pred)
         ax2.plot(x, pred, color="orange") 
@@ -174,15 +155,8 @@ def show_results(real_data_path:str,seed:int,number_training_data:int=5,number_r
         ax2.set_xlabel("Position")
         ax2.set_ylabel("Temps")
 
-        # Ajuste automatiquement les espacements pour éviter que les textes ne se chevauchent
         plt.tight_layout()
         plt.savefig(f"graphics/{model_name}-realdata-{index}.png", dpi=300, bbox_inches='tight')
-        # 5. Affichage
-        # plt.show()
-
-
-    ### Real Data
-    # preds_real = model(inputs_real)
 
 
 

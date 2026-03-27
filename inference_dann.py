@@ -6,12 +6,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.utils import shuffle
 
-# --- Project specific imports ---
 from utils.parse_config import get_config
 from data_process.read_and_plot import build_affine_signal, read_data_from_text
 from data_process.process_data import fetch_data_for_training
 
-# Mapping from classes (0-5) back to slopes (-2, -1, 0, 1, 2, 3)
 INDEX_TO_SLOPE = {0: -2, 1: -1, 2: 0, 3: 1, 4: 2, 5: 3}
 
 class DANN(nn.Module):
@@ -66,7 +64,7 @@ def load_real_data(real_data_path, seed=42, number_real_data=5):
     df_data = df["noisy_read"].apply(text2float)
     # Shuffle with the same seed as show_results.py
     df_data = shuffle(df_data, random_state=seed)
-    inputs_list = df_data.to_list()
+    inputs_list = df_data.to_list() # type: ignore
     inputs_list = [torch.tensor(input) for input in inputs_list]
     return inputs_list[:number_real_data]
 
@@ -103,15 +101,12 @@ def inference_dann(seed=25): # Using seed 25 by default as in show_results.py
     
     model, device = load_dann_model(window_size)
     
-    # 1. Load Real Data (Target)
     inputs_real = load_real_data(real_data_path, seed=seed, number_real_data=5)
-    
-    # 2. Load Simulated Data (Source) - Use same logic as show_results
     inputs_simulated, targets_simulated, _ = fetch_data_for_training(stop=5)
     
     os.makedirs("graphics", exist_ok=True)
 
-    # --- SIMULATED DATA INFERENCE ---
+    # Predict on simulated data
     print(f"DANN inference on simulated data (Seed: {seed})")
     for index, sig in enumerate(inputs_simulated):
         pred = predict_single_signal(model, device, sig, window_size=window_size)
@@ -137,7 +132,7 @@ def inference_dann(seed=25): # Using seed 25 by default as in show_results.py
         print(f"Saved simulated result to graphics/dann-simulated-{index}.png")
         plt.close()
 
-    # --- REAL DATA INFERENCE ---
+    # Predict on real data
     print(f"DANN inference on real data (Seed: {seed})")
     for index, sig in enumerate(inputs_real):
         pred = predict_single_signal(model, device, sig, window_size=window_size)

@@ -8,12 +8,9 @@ from torch.utils.data import Dataset, DataLoader, random_split
 from sklearn.utils import shuffle
 from torchmetrics.classification import MulticlassF1Score
 
-# --- Project specific imports ---
 from data_process.process_data import fetch_data_for_training
 from utils.parse_config import get_config
 from data_process.read_and_plot import read_data_from_text
-
-# --- DANN Architecture Components ---
 
 class ReverseLayerF(torch.autograd.Function):
     @staticmethod
@@ -68,8 +65,6 @@ class DANN(nn.Module):
             class_output = self.class_classifier(feature)
             return class_output
 
-# --- Datasets ---
-
 class SourceDataset(Dataset):
     def __init__(self, input_tensor, targets, window_size):
         self.targets = targets
@@ -123,8 +118,6 @@ class TargetDataset(Dataset):
         window = signal[j : j + self.window_size]
         return window.to(torch.float32)
 
-# --- Loading Functions ---
-
 def load_real_data(real_data_path, stop=None):
     if not os.path.exists(real_data_path):
         print(f"Warning: {real_data_path} not found.")
@@ -137,12 +130,10 @@ def load_real_data(real_data_path, stop=None):
     inputs_list = []
     for input_val in df_data.to_list():
         t = torch.tensor(input_val)
-        # Remove any NaN or Inf from the signal itself
+        # Handle NaN/Inf in signal
         t = torch.nan_to_num(t, nan=0.0, posinf=1.0, neginf=-1.0)
         inputs_list.append(t)
     return inputs_list
-
-# --- Training function ---
 
 def train_dann():
     config = get_config()
@@ -151,7 +142,7 @@ def train_dann():
     
     window_size = config["model"]["mlp"]["sliding_window_size"]
     batch_size = config["training"]["mlp"]["batch_size"]
-    lr = 5e-5 # Lower LR for better stability
+    lr = 5e-5 # Lower LR for stability
     epochs = config["training"]["mlp"]["epoch"]
     num_workers = config["data"]["num_workers"]
     with_split = config.get("training", {}).get("mlp", {}).get("with_split", 0.8)
@@ -201,11 +192,10 @@ def train_dann():
             p = float(i + epoch * len_dataloader) / (epochs * len_dataloader)
             alpha = 2. / (1. + np.exp(-10 * p)) - 1
             
-            # 1. Source data
             try:
                 s_img, s_label = next(data_source_iter)
             except StopIteration: break
-            # Robust per-sample normalization (subtract mean, divide std for EACH window in batch)
+            # Per-sample normalization
             s_mean = s_img.mean(dim=1, keepdim=True)
             s_std = s_img.std(dim=1, keepdim=True) + 1e-8
             s_img = (s_img - s_mean) / s_std
@@ -216,11 +206,10 @@ def train_dann():
             err_s_label = loss_class(class_output, s_label)
             err_s_domain = loss_domain(domain_output, domain_label_source)
             
-            # 2. Target data
             try:
                 t_img = next(data_target_iter)
             except StopIteration: break
-            # Robust per-sample normalization
+            # Per-sample normalization
             t_mean = t_img.mean(dim=1, keepdim=True)
             t_std = t_img.std(dim=1, keepdim=True) + 1e-8
             t_img = (t_img - t_mean) / t_std
@@ -230,7 +219,6 @@ def train_dann():
             _, domain_output = model(t_img, alpha=alpha)
             err_t_domain = loss_domain(domain_output, domain_label_target)
             
-            # 3. Combined loss
             err = err_s_label + err_s_domain + err_t_domain
             
             if torch.isnan(err):
@@ -243,7 +231,6 @@ def train_dann():
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             optimizer.step()
             
-            # Additional safety: check weights for NaN
             if i % 1000 == 0:
                 has_nan = False
                 for param in model.parameters():
@@ -260,14 +247,13 @@ def train_dann():
             
             if i > 2000: break
 
-        # Validation on source data
         if val_loader:
             model.eval()
             val_loss, correct, total, f1_val = 0, 0, 0, 0
             with torch.no_grad():
                 for v_img, v_label in val_loader:
                     v_img, v_label = v_img.to(device), v_label.to(device)
-                    # Robust per-sample normalization
+                    # Per-sample normalization
                     v_mean = v_img.mean(dim=1, keepdim=True)
                     v_std = v_img.std(dim=1, keepdim=True) + 1e-8
                     v_img = (v_img - v_mean) / v_std
